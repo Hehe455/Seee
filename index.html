@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Combined Firestore Operations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Color Palette */
+    :root {
+      --primary-color: #285430;
+      --secondary-color: #5F8D4E;
+      --accent-color: #A4BE7B;
+      --highlight-color: #E5D9B6;
+    }
+
+    /* Updated CSS with increased vertical height */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Ubuntu', sans-serif;
+      background-color: var(--secondary-color);
+      /* Background color for the entire screen */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    .container {
+      text-align: center;
+      background-color: var(--primary-color);
+      /* Fallback for browsers that don't support var() */
+      width: 90%;
+      /* Adjusted width for responsiveness */
+      max-width: 400px;
+      /* Set maximum width */
+      padding: 30px;
+      /* Increased padding for more spacing inside */
+      border-radius: 15px;
+      /* Rounded corners */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+      /* Adjusted margin top */
+    }
+
+    h1 {
+      color: var(--secondary-color);
+      /* Title color from palette */
+    }
+
+    button {
+      padding: 12px 24px;
+      /* More padding for the button */
+      background-color: var(--secondary-color);
+      color: #fff;
+      border: 2px solid var(--secondary-color);
+      border-radius: 8px;
+      /* Rounded corners for button */
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: var(--accent-color);
+    }
+
+    p {
+      margin-top: 30px;
+      /* Adjusted margin top */
+      font-size: 5vh;
+      /* Larger font size */
+      color: var(--secondary-color);
+      /* Text color from palette */
+    }
+
+    /* Media Query for Mobile Devices */
+    @media screen and (max-width: 480px) {
+      .container {
+        width: 90%;
+        padding: 20px;
+      }
+
+      input[type="text"],
+      button {
+        width: calc(100% - 20px);
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+    }
+
+    .heart-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      width: 100px;
+      height: 90px;
+      margin-top: 10px;
+      animation: heartAnimation 2s ease-out forwards;
+      animation-iteration-count: infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 52px;
+      height: 80px;
+      border-radius: 50px 50px 0 0;
+      background: #ff4d70;
+    }
+
+    .heart::before {
+      left: 50px;
+      transform: rotate(-45deg);
+      transform-origin: 0 100%;
+    }
+
+    .heart::after {
+      left: 0;
+      transform: rotate(45deg);
+      transform-origin: 100% 100%;
+    }
+
+    @keyframes heartAnimation {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(calc(-100vh - 100px)) scale(2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Lighten your mood</h1>
+    <button onclick="changeThemeAndData()">Get a compliment</button>
+    <p id="displayData"></p>
+  </div>
+  <div class="heart-container">
+    <!-- Hearts will be added dynamically using JavaScript -->
+  </div>
+  <!-- Firebase and JavaScript file -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="firebase.js"></script>
+  <script>
+
+    function changeThemeAndData() {
+     
+      loadRandomDocument();
+    }
+    
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const heartContainer = document.querySelector('.heart-container');
+
+      function createHeart() {
+        const heart = document.createElement('span');
+        heart.classList.add('heart');
+        heart.style.left = Math.random() * window.innerWidth + 'px'; // Random horizontal position
+        heartContainer.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove(); // Remove the heart after animation finishes
+        }, 2000); // Adjust this time to match the animation duration
+      }
+
+      // Create hearts at an interval
+      const interval = setInterval(createHeart, 200); // Adjust interval as needed
+
+      // Function to reset interval after a certain time (for example, 10 seconds)
+      function resetInterval() {
+        clearInterval(interval);
+        setInterval(createHeart, 200); // Adjust interval as needed
+      }
+
+      // Reset the interval after a certain time (for example, 10 seconds)
+      setTimeout(resetInterval, 10000); // Adjust this time according to the desired duration
+    });
+  </script>
+</body>
+
+</html>

@@ -42,38 +42,38 @@
   // Function to load and display data from Firestore
 function loadRandomDocument() {
     db.collection("data")
-      .get()
-      .then(function(querySnapshot) {
-        if (querySnapshot.size > 0) {
-          var randomIndex = Math.floor(Math.random() * querySnapshot.size);
-          var counter = 0;
-          querySnapshot.forEach(function(doc) {
-            if (counter === randomIndex) {
-              // Display the text from the 'data' collection
-              document.getElementById('displayData').innerText = doc.data().text;
-  
-              // Add timestamp to the 'use' collection
-              var timestamp = firebase.firestore.FieldValue.serverTimestamp(); // Get server timestamp
-              db.collection('use').add({
-                timestamp: timestamp // Include timestamp in the document
-              })
-              .then(function(docRef) {
-                console.log("Timestamp written to 'use' collection with ID: ", docRef.id);
-              })
-              .catch(function(error) {
-                console.error("Error adding timestamp to 'use' collection: ", error);
-              });
-  
+        .get()
+        .then(function (querySnapshot) {
+            if (querySnapshot.size > 0) {
+                var randomIndex = Math.floor(Math.random() * querySnapshot.size);
+                var counter = 0;
+                querySnapshot.forEach(function (doc) {
+                    if (counter === randomIndex) {
+                        // Display the text from the 'data' collection
+                        document.getElementById('displayData').innerText = doc.data().text;
+
+                        // Add timestamp and text to the 'use' collection
+                        var timestamp = firebase.firestore.FieldValue.serverTimestamp(); // Get server timestamp
+                        db.collection('use').add({
+                            text: doc.data().text, // Include text in the document
+                            timestamp: timestamp // Include timestamp in the document
+                        })
+                            .then(function (docRef) {
+                                console.log("Document written to 'use' collection with ID: ", docRef.id);
+                            })
+                            .catch(function (error) {
+                                console.error("Error adding document to 'use' collection: ", error);
+                            });
+
+                    }
+                    counter++;
+                });
+            } else {
+                document.getElementById('displayData').innerText = "No data found.";
             }
-            counter++;
-          });
-        } else {
-          document.getElementById('displayData').innerText = "No data found.";
-        }
-      })
-      .catch(function(error) {
-        console.error("Error getting documents: ", error);
-        document.getElementById('displayData').innerText = 'Error loading data: ' + error;
-      });
-  }
-  
+        })
+        .catch(function (error) {
+            console.error("Error getting documents: ", error);
+            document.getElementById('displayData').innerText = 'Error loading data: ' + error;
+        });
+}

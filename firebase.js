@@ -39,7 +39,8 @@
 
 
   // Function to load and display data from Firestore
-  function loadRandomDocument() {
+  // Function to load and display data from Firestore
+function loadRandomDocument() {
     db.collection("data")
       .get()
       .then(function(querySnapshot) {
@@ -48,7 +49,21 @@
           var counter = 0;
           querySnapshot.forEach(function(doc) {
             if (counter === randomIndex) {
+              // Display the text from the 'data' collection
               document.getElementById('displayData').innerText = doc.data().text;
+  
+              // Add timestamp to the 'use' collection
+              var timestamp = firebase.firestore.FieldValue.serverTimestamp(); // Get server timestamp
+              db.collection('use').add({
+                timestamp: timestamp // Include timestamp in the document
+              })
+              .then(function(docRef) {
+                console.log("Timestamp written to 'use' collection with ID: ", docRef.id);
+              })
+              .catch(function(error) {
+                console.error("Error adding timestamp to 'use' collection: ", error);
+              });
+  
             }
             counter++;
           });
@@ -60,4 +75,5 @@
         console.error("Error getting documents: ", error);
         document.getElementById('displayData').innerText = 'Error loading data: ' + error;
       });
-    }
+  }
+  
